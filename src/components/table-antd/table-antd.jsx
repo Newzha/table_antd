@@ -6,8 +6,6 @@ import {Table, Input, Button, Popconfirm, Form, Select, Icon} from 'antd';
 import 'antd/dist/antd.css'
 import './table-antd.css'
 
-
-
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
 const EditableRow = ({ form, index, ...props }) => (
@@ -199,24 +197,27 @@ export default class TableEdit extends Component {
           });
         }
       },
-      render: (text) => {
+      render: (text ,index) => {
         const { searchText, data } = this.state;
         const Option = Select.Option;
         const start = data.map(s => s.start) ;
         console.log(start);
+        const key = data.map(s => s.key) ;
+        console.log(key);
         // const children = [];
         // for (let i = 10; i < 36; i++) {
         //   children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
         // }
         const children = [];
         for (let i = 0; i < start.length; i++) {
-          // var s = start[i]
-          // s.index = i
           children.push(<Option key={i}>{start[i]}</Option>);
           // console.log(children)
-          // console.log('111')
         }
         // const children = data.map((s, index) => (<Option key={s.index}>{s.start}</Option>))
+        //  const index = data.findIndex(item => item.key ===item.key);
+        // console.log(index)
+        //  const datastart = data[index];
+        // const dataStart = data.filter((s, index) => s.key === index ? s.start : '')
         return  searchText ? (
           <span>
             {text.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i')).map((fragment, i) => (
@@ -227,15 +228,17 @@ export default class TableEdit extends Component {
         ) : text,
           <Select
             // mode="tags"
+            // mode="multiple"
             style={{ width: '100%' }}
             // placeholder={'mmp'}
             // defaultValue={['a10', 'c12']}
-            // defaultValue={data.map((s) => s.start)}
-            defaultValue={ data.map((s, key) => s.start)}
-            // key={index}
+            //  defaultValue={ start[0] }
+            // defaultValue={datastart}
+            //  key={index}
             // value = {start[this.index]}
             // defaultValue={start[this.index]}
             onChange={this.handleChange}
+            labelInValue={true}
           >
             {children}
           </Select>
@@ -246,8 +249,8 @@ export default class TableEdit extends Component {
               // placeholder={'mmp'}
               // defaultValue={['a10', 'c12']}
               // defaultValue={data.map((s) => s.start)}
-              defaultValue={ s.start}
-               key={index}
+              defaultValue={ s.start }
+              key={index}
               // value = {start[this.index]}
               // defaultValue={start[this.index]}
               onChange={this.handleChange}
@@ -370,10 +373,37 @@ export default class TableEdit extends Component {
     }
   }
 
+  handleChange = ( value) => {
+    const chooseOp = JSON.stringify(value)
+    // console.log(chooseOp)
+    console.log(`selected ${JSON.stringify(value)}`);
+    const startData = [...this.state.data]
+    console.log(startData)
+    const index = startData.findIndex(item => chooseOp.key === item.key);
+    const item = startData[index];
+    // startData.splice(value, 1, {
+    //     ...item,
+    // });
+    // this.setState({startData: startData.splice(value, 1, item)})
 
-  handleChange = (value) => {
-    console.log(`selected ${value}`);
+    // const newData = [...this.state.data];
+    // console.log(newData)
+    // const index = newData.findIndex(item => row.key === item.key);
+    // console.log('index'+index)
+    // const item = newData[index];
+    // console.log("item"+item)
+    // newData.splice(index, 1, {
+    //   ...item,
+    //   ...row,
+    // });
+    // this.setState({ data: newData });
+
+    // for (var value in startData) {
+    //   console.log(startData[value])
+    // }
+    // this.setState({startData: startData.splice(value, 1, chooseOp.label)})
   }
+
   handleSearch = (selectedKeys, confirm) => () => {
     confirm();
     this.setState({ searchText: selectedKeys[0] });
@@ -405,9 +435,13 @@ export default class TableEdit extends Component {
   }
 
   handleSave = (row) => {
-    const newData = [...this.state.data];
-    const index = newData.findIndex(item => row.key === item.key);
-    const item = newData[index];
+    console.log(row) //点击的当前行data
+    const newData = [...this.state.data]; //获取stata状态中的data
+    console.log(newData)
+    const index = newData.findIndex(item => row.key === item.key); //得到点击的当前行index
+    console.log('index'+index)
+    const item = newData[index]; //匹配对应的item
+    console.log("item"+item)
     newData.splice(index, 1, {
       ...item,
       ...row,

@@ -14,15 +14,13 @@ for (let i = 10; i < 36; i++) {
 function handleChange(value) {
   console.log(`selected ${value}`);
 }
-
-ReactDOM.render(
-  <Select
-    mode="tags"
-    style={{ width: '100%' }}
-    placeholder="Tags Mode"
-    onChange={handleChange}
+const dom = <Select
+  mode="tags"
+  style={{ width: '100%' }}
+  placeholder="Tags Mode"
+  onChange={handleChange}
   >
     {children}
-  </Select>,
-  mountNode);
+  </Select>
+ReactDOM.render(dom, mountNode);
 
